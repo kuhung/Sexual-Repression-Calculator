@@ -1,9 +1,10 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/web",
+  "outputDirectory": "dist",
   "functions": {
-    "server.cjs": {
-      "runtime": "edge"
+    "dist/server.cjs": {
+      "runtime": "@vercel/deno",
+      "includeFiles": "dist/web/**"
     }
   },
   "routes": [
