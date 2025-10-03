@@ -3,8 +3,7 @@
   "outputDirectory": "dist/web",
   "functions": {
     "server.cjs": {
-      "runtime": "edge",
-      "entrypoint": "server.cjs"
+      "runtime": "edge"
     }
   },
   "routes": [
