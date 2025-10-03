@@ -34,6 +34,7 @@ cd sexual-repression-index-calculator
 npm install
 
 # 注意：如果在 `npm install` 过程中遇到 `date-fns` 和 `react-day-picker` 的依赖冲突，请尝试将 `package.json` 中的 `date-fns` 版本降级到 `^3.0.0`。
+# 注意：如果在 `npm install` 过程中遇到 `react` 和 `react-day-picker` 的依赖冲突，请尝试将 `package.json` 中的 `react` 和 `react-dom` 版本降级到 `^18.2.0`，同时将 `@types/react` 和 `@types/react-dom` 更新到 `^18.2.82` 和 `^18.2.25`。
 
 # 启动开发服务器
 npm run dev
