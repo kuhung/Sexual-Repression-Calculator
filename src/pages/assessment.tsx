@@ -12,6 +12,7 @@ import { AlertTriangle, CheckCircle, ArrowLeft, Home, Brain } from 'lucide-react
 import { AssessmentSession, Demographics, Response } from '@/types';
 import { calculateAssessmentResults } from '@/lib/calculator';
 import { saveAssessmentSession } from '@/lib/storage';
+import { collectAssessmentScore } from '@/lib/analytics';
 import { ConsentForm } from '@/components/assessment/consent-form';
 import { DemographicsForm } from '@/components/assessment/demographics-form';
 import { QuestionnaireSection } from '@/components/assessment/questionnaire-section';
@@ -105,6 +106,15 @@ export default function Assessment() {
 
       setSession(completedSession);
       saveAssessmentSession(completedSession);
+
+      // 采集分数数据（异步，不阻塞用户体验）
+      try {
+        await collectAssessmentScore(completedSession);
+        console.log('Score data collected successfully');
+      } catch (collectError) {
+        // 数据采集失败不应影响用户流程
+        console.warn('Failed to collect score data:', collectError);
+      }
 
       // 跳转到结果页面
       setTimeout(() => {
