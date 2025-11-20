@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Clock, Download, Trash2, Eye, Home, BarChart3, Calendar, TrendingUp, Users, FileText, RefreshCw, AlertCircle } from 'lucide-react';
 import { AssessmentSession, SRI_LEVELS } from '@/types';
 import { getAllAssessmentSessions, deleteAssessmentSession, clearAllSessions, downloadAsJSON, downloadAsCSV, exportAllSessionsData } from '@/lib/storage';
+import { Footer } from '@/components/common';
 
 export default function History() {
   const [sessions, setSessions] = useState<AssessmentSession[]>([]);
@@ -100,7 +101,7 @@ export default function History() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-psychology-calm to-psychology-warm">
+    <div className="min-h-screen bg-gradient-to-b from-psychology-calm to-psychology-warm flex flex-col">
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-border/50 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -420,6 +421,7 @@ export default function History() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

@@ -28,7 +28,7 @@ import {
 import { AssessmentSession, SRIResult, SRI_LEVELS } from '@/types';
 import { getAssessmentSession, downloadAsJSON, diagnoseStorage } from '@/lib/storage';
 import { ALL_SCALES } from '@/lib/scales';
-import { ShareResult, ShareButtonMobile, SocialShareFloating, ShareView } from '@/components/common';
+import { ShareResult, ShareButtonMobile, SocialShareFloating, ShareView, Footer } from '@/components/common';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { decodeShareData } from '@/lib/share-utils';
 
@@ -274,7 +274,7 @@ export default function Results() {
   const levelInfo = getLevelInfo(sri.level);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-white to-psychology-warm">
+    <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-white to-psychology-warm flex flex-col">
       {/* 顶部导航 */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-muted">
         <div className="container mx-auto px-4 py-4">
@@ -622,6 +622,7 @@ export default function Results() {
       {isMobile && !isShared && (
         <SocialShareFloating session={session} />
       )}
+      <Footer />
     </div>
   );
 }

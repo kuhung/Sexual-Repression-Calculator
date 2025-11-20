@@ -25,10 +25,11 @@ import {
   Heart,
   FileText
 } from 'lucide-react';
+import { Footer } from '@/components/common';
 
 export default function Guide() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-background to-psychology-warm">
+    <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-background to-psychology-warm flex flex-col">
       {/* 装饰背景 */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-32 h-32 bg-psychology-primary/5 rounded-full blur-xl"></div>
@@ -315,6 +316,7 @@ export default function Guide() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

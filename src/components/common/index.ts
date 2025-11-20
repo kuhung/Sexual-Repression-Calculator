@@ -10,6 +10,7 @@ export { SocialShareFloating } from './social-share-floating';
 export { ShareCard, generateShareCardImage } from './share-card';
 export { ShareSuccess } from './share-success';
 export { ShareStats } from './share-stats';
+export { Footer } from './footer';
 
 // 分享相关的类型和工具函数
 export type { ShareResultProps } from './share-result';

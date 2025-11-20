@@ -24,10 +24,11 @@ import {
   Shield,
   CheckCircle
 } from 'lucide-react';
+import { Footer } from '@/components/common';
 
 export default function Science() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-background to-psychology-warm">
+    <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-background to-psychology-warm flex flex-col">
       {/* 装饰背景 */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-32 right-20 w-28 h-28 bg-psychology-accent/5 rounded-full blur-xl"></div>
@@ -360,6 +361,7 @@ export default function Science() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

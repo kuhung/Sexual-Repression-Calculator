@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
+import { Footer } from "@/components/common";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden flex flex-col">
       {/* Decorative Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-32 left-20 w-6 h-6 bg-blue-400 rounded-full opacity-40"></div>
@@ -18,7 +19,7 @@ export default function NotFound() {
         <div className="absolute bottom-1/4 right-1/3 text-5xl text-gray-300 opacity-25 font-bold">?</div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
+      <div className="relative z-10 flex flex-col items-center justify-center flex-grow p-8">
         <div className="text-center max-w-2xl mx-auto">
           {/* 404 Number */}
           <div className="mb-8">
@@ -46,6 +47,9 @@ export default function NotFound() {
             </Button>
           </div>
         </div>
+      </div>
+      <div className="relative z-10">
+        <Footer />
       </div>
     </div>
   );
