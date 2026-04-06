@@ -86,6 +86,7 @@ export default function Home() {
               
               <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-psychology-primary via-psychology-secondary to-psychology-accent bg-clip-text text-transparent">
                 性压抑指数计算器
+                <span className="block text-2xl md:text-3xl mt-2 text-muted-foreground/80 font-normal">Sexual Repression Index Calculator</span>
               </h1>
               
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
@@ -150,6 +151,50 @@ export default function Home() {
                   <Users className="w-8 h-8 text-psychology-success mx-auto mb-2" />
                   <div className="text-2xl font-bold text-psychology-success">科学</div>
                   <div className="text-sm text-muted-foreground">研究验证</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 什么是性压抑指数及如何使用 */}
+          <section className="mb-20">
+            <div className="max-w-4xl mx-auto space-y-12">
+              <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-psychology-primary/10 shadow-sm">
+                <h2 className="text-2xl font-bold text-foreground mb-4">什么是性压抑指数 (What is the SRI?)</h2>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  性压抑指数 (Sexual Repression Index, 简称 SRI) 是一个综合评估个体在性心理、情感健康以及亲密关系中表现出的压抑程度的指标。
+                  它不仅关注性取向 (sexual orientation) 和性态度，还深入探讨个体在面对性刺激时的情绪反应、内疚感以及羞耻感。
+                  通过科学的心理测量量表，我们的免费性压抑指数计算器能够帮助您洞察潜意识中的情感障碍，从而促进更健康的性心理发展。
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  了解自己的性压抑程度，是迈向自我接纳和建立健康亲密关系的重要一步。无论您是想探索自己的 sexuality，还是希望改善情感健康，这个工具都能为您提供有价值的参考。
+                </p>
+              </div>
+
+              <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 border border-psychology-secondary/10 shadow-sm">
+                <h2 className="text-2xl font-bold text-foreground mb-4">如何使用性压抑指数计算器 (How to Use the Calculator)</h2>
+                <div className="space-y-4">
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-psychology-primary/10 text-psychology-primary flex items-center justify-center font-bold flex-shrink-0">1</div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-1">选择测评版本</h3>
+                      <p className="text-sm text-muted-foreground">根据您的时间安排，选择8-15分钟的快速测评或更全面的完整测评。两者均完全免费且保密。</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-psychology-primary/10 text-psychology-primary flex items-center justify-center font-bold flex-shrink-0">2</div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-1">诚实作答</h3>
+                      <p className="text-sm text-muted-foreground">根据您的第一直觉回答一系列关于性态度、情感反应和亲密关系的问题。您的回答越真实，结果越准确。</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-psychology-primary/10 text-psychology-primary flex items-center justify-center font-bold flex-shrink-0">3</div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-1">获取深度解析</h3>
+                      <p className="text-sm text-muted-foreground">完成测试后，系统将立即生成您的专属报告，包含多维度的分数解读和个性化的心理健康建议。</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -354,6 +399,31 @@ export default function Home() {
                 </div>
               </CardContent>
             </Card>
+          </section>
+
+          {/* 常见问题解答 FAQ */}
+          <section className="mb-20">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12">常见问题解答 (FAQ)</h2>
+              <div className="space-y-6">
+                <div className="bg-white/80 p-6 rounded-xl border border-psychology-primary/10">
+                  <h3 className="text-xl font-semibold mb-2">这个性压抑指数计算器是免费的吗？</h3>
+                  <p className="text-muted-foreground">是的，我们的性压抑指数计算器完全免费。我们致力于为所有人提供科学、可靠的情感健康自我评估工具。</p>
+                </div>
+                <div className="bg-white/80 p-6 rounded-xl border border-psychology-primary/10">
+                  <h3 className="text-xl font-semibold mb-2">我的测试结果会被分享或保存吗？</h3>
+                  <p className="text-muted-foreground">绝对不会。所有的测试数据和结果都在您的浏览器本地处理，我们不会收集、存储或分享您的任何个人信息，确保100%的隐私安全。</p>
+                </div>
+                <div className="bg-white/80 p-6 rounded-xl border border-psychology-primary/10">
+                  <h3 className="text-xl font-semibold mb-2">测试结果准确吗？</h3>
+                  <p className="text-muted-foreground">我们的计算器基于多个经过验证的心理测量量表（如SIS/SES双控制模型、Mosher性内疚量表等）。虽然它能提供有价值的洞察，但请记住，它不能替代专业的心理咨询或医疗诊断。更多信息，请参阅我们的<Link to="/science" className="text-psychology-primary hover:underline">科学依据</Link>。</p>
+                </div>
+                <div className="bg-white/80 p-6 rounded-xl border border-psychology-primary/10">
+                  <h3 className="text-xl font-semibold mb-2">什么是 sexuality test？</h3>
+                  <p className="text-muted-foreground">Sexuality test 是一种帮助个人探索其性心理、性取向、性态度及情感反应的工具。我们的计算器专注于评估性压抑程度，帮助您更好地理解自己在亲密关系中的表现和潜意识情感。</p>
+                </div>
+              </div>
+            </div>
           </section>
 
           {/* CTA区域 */}
