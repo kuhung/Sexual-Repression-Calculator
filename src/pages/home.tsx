@@ -40,9 +40,9 @@ export default function Home() {
       <div className="relative z-10">
         {/* 导航栏 */}
         <nav className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-psychology-primary rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-psychology-primary rounded-lg flex items-center justify-center shrink-0">
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -51,22 +51,22 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" asChild>
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
+              <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
                 <Link to="/guide">
-                  <BookOpen className="w-4 h-4 mr-2" />
+                  <BookOpen className="w-4 h-4 mr-1 sm:mr-2" />
                   使用指南
                 </Link>
               </Button>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
                 <Link to="/science">
-                  <FileText className="w-4 h-4 mr-2" />
+                  <FileText className="w-4 h-4 mr-1 sm:mr-2" />
                   科学依据
                 </Link>
               </Button>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
                 <Link to="/history">
-                  <History className="w-4 h-4 mr-2" />
+                  <History className="w-4 h-4 mr-1 sm:mr-2" />
                   历史记录
                 </Link>
               </Button>

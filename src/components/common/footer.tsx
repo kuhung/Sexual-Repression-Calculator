@@ -33,25 +33,13 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/guide" className="hover:text-psychology-primary">使用指南</Link></li>
               <li><Link to="/science" className="hover:text-psychology-primary">科学依据</Link></li>
-              <li>
-                <a 
-                  href="https://kuhung.me" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="hover:text-psychology-primary"
-                >
-                  关于作者
-                </a>
-              </li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-semibold mb-3">支持</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-psychology-primary">常见问题</a></li>
-              <li><a href="#" className="hover:text-psychology-primary">专业咨询</a></li>
-              <li><a href="#" className="hover:text-psychology-primary">危机资源</a></li>
+              <li><Link to="/guide" className="hover:text-psychology-primary">常见问题</Link></li>
             </ul>
           </div>
         </div>
