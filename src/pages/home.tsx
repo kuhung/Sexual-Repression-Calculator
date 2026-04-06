@@ -46,7 +46,7 @@ export default function Home() {
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="font-bold text-lg text-psychology-primary">SRI Calculator</h1>
+                <span className="font-bold text-lg text-psychology-primary block">SRI Calculator</span>
                 <p className="text-xs text-muted-foreground">性压抑指数计算器</p>
               </div>
             </div>
@@ -85,8 +85,8 @@ export default function Home() {
               </Badge>
               
               <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-psychology-primary via-psychology-secondary to-psychology-accent bg-clip-text text-transparent">
-                性压抑指数计算器
-                <span className="block text-2xl md:text-3xl mt-2 text-muted-foreground/80 font-normal">Sexual Repression Index Calculator</span>
+                性压抑测试与指数计算器
+                <span className="block text-2xl md:text-3xl mt-2 text-muted-foreground/80 font-normal">Sexual Repression Test & Index Calculator</span>
               </h1>
               
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto">
