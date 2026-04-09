@@ -18,6 +18,8 @@ import { QuestionnaireSection } from '@/components/assessment/questionnaire-sect
 
 type AssessmentStep = 'consent' | 'demographics' | 'questionnaire' | 'processing' | 'completed';
 
+import { SEO } from '@/components/SEO';
+
 export default function Assessment() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -25,6 +27,13 @@ export default function Assessment() {
   // 获取评估类型
   const assessmentType = (searchParams.get('type') as 'quick' | 'full') || 'quick';
   
+  const seoTitle = assessmentType === 'quick' 
+    ? "快速性压抑测试 (8-15分钟) - 免费情感健康评估" 
+    : "完整性压抑测试 (25-40分钟) - 深度情感健康评估";
+  const seoDesc = assessmentType === 'quick'
+    ? "参与免费且保密的快速性压抑测试，初步了解您的情感健康与性心理特征。"
+    : "参与免费且保密的完整性压抑测试，基于科学量表全面深度解析您的情感健康与性心理特征。";
+
   // 状态管理
   const [currentStep, setCurrentStep] = useState<AssessmentStep>('consent');
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
@@ -141,6 +150,11 @@ export default function Assessment() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-white to-psychology-warm">
+      <SEO 
+        title={seoTitle}
+        description={seoDesc}
+        canonicalUrl={`https://sri.kuhung.me/assessment?type=${assessmentType}`}
+      />
       {/* 顶部导航 */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-muted">
         <div className="container mx-auto px-4 py-4">

@@ -26,9 +26,16 @@ import {
 } from 'lucide-react';
 import { Footer } from '@/components/common';
 
+import { SEO } from '@/components/SEO';
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-white to-psychology-warm flex flex-col">
+      <SEO 
+        title="性压抑指数计算器 - Sexual Repression Index Calculator Free Self-Assessment Tool"
+        description="参与免费且完全保密的性压抑测试 (Sexual Repression Test)，基于科学的心理测量量表，帮助您深入洞察情感健康与性心理特征。"
+        canonicalUrl="https://sri.kuhung.me/"
+      />
       {/* 背景装饰 */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-20 w-8 h-8 bg-psychology-primary/10 rounded-full"></div>

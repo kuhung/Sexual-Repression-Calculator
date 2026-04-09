@@ -102,7 +102,7 @@ export function saveStorageData(data: StorageData): void {
  * @param oldData 旧版本数据
  * @returns 新版本数据
  */
-function migrateStorageData(oldData: any): StorageData {
+function migrateStorageData(_oldData: unknown): StorageData {
   // 目前只有一个版本，简单返回默认结构
   return {
     sessions: [],
@@ -255,7 +255,7 @@ export function exportAllSessionsData(): ExportData[] {
  * @param data 要下载的数据
  * @param filename 文件名
  */
-export function downloadAsJSON(data: any, filename: string): void {
+export function downloadAsJSON(data: unknown, filename: string): void {
   try {
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: 'application/json'
@@ -451,7 +451,7 @@ export function diagnoseStorage() {
     console.log('Sessions count:', data.sessions?.length || 0);
     
     if (data.sessions) {
-      data.sessions.forEach((session: any, index: number) => {
+      data.sessions.forEach((session: AssessmentSession, index: number) => {
         console.log(`Session ${index}:`, {
           id: session.id,
           type: session.type,

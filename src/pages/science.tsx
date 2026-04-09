@@ -25,10 +25,16 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { Footer } from '@/components/common';
+import { SEO } from '@/components/SEO';
 
 export default function Science() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-background to-psychology-warm flex flex-col">
+      <SEO 
+        title="科学原理 - 性压抑指数计算器"
+        description="了解性压抑指数计算器背后的心理学理论与科学量表，包括SIS/SES双控制模型等。"
+        canonicalUrl="https://sri.kuhung.me/science"
+      />
       {/* 装饰背景 */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-32 right-20 w-28 h-28 bg-psychology-accent/5 rounded-full blur-xl"></div>

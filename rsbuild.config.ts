@@ -8,6 +8,9 @@ export default defineConfig({
   plugins: [pluginReact()],
   html: {
     template: "./index.html",
+    templateParameters: {
+      VERCEL_GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA || 'local',
+    },
   },
   source: {
     entry: {

@@ -2,10 +2,16 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
 import { Footer } from "@/components/common";
+import { SEO } from "@/components/SEO";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-gray-50 relative overflow-hidden flex flex-col">
+      <SEO 
+        title="404 - 页面未找到"
+        description="您访问的页面不存在。"
+        noindex={true}
+      />
       {/* Decorative Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-32 left-20 w-6 h-6 bg-blue-400 rounded-full opacity-40"></div>

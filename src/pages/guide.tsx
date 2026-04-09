@@ -26,10 +26,16 @@ import {
   FileText
 } from 'lucide-react';
 import { Footer } from '@/components/common';
+import { SEO } from '@/components/SEO';
 
 export default function Guide() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-background to-psychology-warm flex flex-col">
+      <SEO 
+        title="使用指南 - 性压抑指数计算器"
+        description="了解如何正确使用性压抑指数计算器，获取准确的测试结果与情感健康解析。"
+        canonicalUrl="https://sri.kuhung.me/guide"
+      />
       {/* 装饰背景 */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-32 h-32 bg-psychology-primary/5 rounded-full blur-xl"></div>

@@ -32,6 +32,8 @@ import { ShareResult, ShareButtonMobile, SocialShareFloating, ShareView, Footer 
 import { useIsMobile } from '@/hooks/use-mobile';
 import { decodeShareData } from '@/lib/share-utils';
 
+import { SEO } from '@/components/SEO';
+
 export default function Results() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -275,6 +277,11 @@ export default function Results() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-psychology-calm via-white to-psychology-warm flex flex-col">
+      <SEO 
+        title="测试结果 - 性压抑指数计算器"
+        description="查看您的性压抑测试结果与深度情感健康解析。"
+        noindex={true}
+      />
       {/* 顶部导航 */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-muted">
         <div className="container mx-auto px-4 py-4">

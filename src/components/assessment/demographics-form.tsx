@@ -19,7 +19,7 @@ interface DemographicsFormProps {
 }
 
 export function DemographicsForm({ onSubmit, onBack, initialData }: DemographicsFormProps) {
-  const [formData, setFormData] = useState<Partial<Demographics & Record<string, any>>>({
+  const [formData, setFormData] = useState<Partial<Demographics & Record<string, unknown>>>({
     consentToParticipate: true,
     ...initialData
   });

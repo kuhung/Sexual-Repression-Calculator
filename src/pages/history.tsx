@@ -15,6 +15,7 @@ import { Clock, Download, Trash2, Eye, Home, BarChart3, Calendar, TrendingUp, Us
 import { AssessmentSession, SRI_LEVELS } from '@/types';
 import { getAllAssessmentSessions, deleteAssessmentSession, clearAllSessions, downloadAsJSON, downloadAsCSV, exportAllSessionsData } from '@/lib/storage';
 import { Footer } from '@/components/common';
+import { SEO } from '@/components/SEO';
 
 export default function History() {
   const [sessions, setSessions] = useState<AssessmentSession[]>([]);
@@ -102,6 +103,11 @@ export default function History() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-psychology-calm to-psychology-warm flex flex-col">
+      <SEO 
+        title="测评历史 - 性压抑指数计算器"
+        description="查看您的性压抑测试历史记录。"
+        noindex={true}
+      />
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-border/50 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
