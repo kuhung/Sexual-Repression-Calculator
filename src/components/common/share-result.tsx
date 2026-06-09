@@ -257,7 +257,7 @@ export function ShareResult({ session, className }: ShareResultProps) {
                 
                 {qrCodeUrl && (
                   <div className="flex justify-center p-4 bg-white rounded-lg border">
-                    <img src={qrCodeUrl} alt="分享二维码" className="w-32 h-32" />
+                    <img src={qrCodeUrl} alt="性压抑测试结果分享二维码 (Sexual Repression Test Result QR Code)" className="w-32 h-32" />
                   </div>
                 )}
               </div>

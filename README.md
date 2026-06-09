@@ -11,7 +11,8 @@
 - 🔬 **科学可靠**: 基于SIS/SES、Mosher性内疚、KISS-9、SOS等国际认可量表
 - ⚡ **双版本支持**: 快测版(39题，8-15分钟) + 完整版(117题，25-40分钟)
 - 📊 **专业分析**: 四维度分析 + SRI指数(0-100) + 个性化建议
-- 🔒 **隐私保护**: 100%本地数据处理，无服务器传输
+- 🔒 **隐私保护**: 测评答案本地处理；付费解锁仅发送支付会话信息
+- 💳 **付费解锁**: 支持 Stripe Checkout 解锁完整报告
 - 📱 **现代化UI**: 响应式设计，支持所有设备
 - 💾 **数据管理**: 历史记录、数据导出、自动保存
 - 🔗 **社交分享**: 多平台分享、智能文案、二维码生成
@@ -50,6 +51,39 @@ npm start
 
 - 开发环境: http://localhost:3000
 - 生产环境: 根据部署配置
+
+### Stripe 完整报告解锁
+
+结果页保留免费基础结果，并通过 Stripe Checkout 解锁完整报告。问卷回答和人口学信息仍保存在用户本地浏览器；支付流程只使用评估会话 ID 作为 Stripe metadata/client reference，用于付款后回到当前浏览器校验解锁。
+
+在 Vercel 环境变量中配置：
+
+```bash
+STRIPE_SECRET_KEY=sk_live_xxx
+STRIPE_FULL_REPORT_PRICE_ID=price_xxx
+PUBLIC_SRI_REPORT_PRICE_LABEL=HK$9
+PUBLIC_SITE_URL=https://your-domain.example
+```
+
+如果不使用 `STRIPE_FULL_REPORT_PRICE_ID`，接口会使用以下变量动态创建 Checkout line item：
+
+```bash
+STRIPE_REPORT_PRICE_AMOUNT=900
+STRIPE_REPORT_PRICE_CURRENCY=hkd
+STRIPE_REPORT_PRODUCT_NAME=SRI Full Report
+```
+
+Stripe Dashboard 建议：
+
+- 品牌/商户展示名使用 `Kuhung Lab` 或 `SRI Calculator`
+- 商品名使用 `SRI Full Report`
+- 账单描述使用 `KUHUNG LAB` 或 `SRI REPORT`，避免在银行卡账单中暴露敏感主题
+- 在 Public business details 中配置：
+  - Terms of service URL: `https://your-domain.example/terms`
+  - Privacy policy URL: `https://your-domain.example/privacy`
+  - Refund policy URL: `https://your-domain.example/refunds`
+  - Support/contact URL: `https://kuhung.me/about` 或你的专用支持邮箱/页面
+- 当前 Checkout Session 会要求用户勾选服务条款；如果 Stripe Dashboard 没有有效的 Terms of service URL，创建 Checkout Session 可能失败。
 
 ## 📋 功能说明
 
@@ -96,7 +130,8 @@ SRI = Σ(标准化维度分数) → 0-100映射
 
 ### 后端技术栈
 
-- **运行时**: Deno Edge Function
+- **支付接口**: Vercel API Functions + Stripe Checkout
+- **运行时**: Deno Edge Function / Vercel Serverless Functions
 - **框架**: Hono.js + zValidator
 - **数据验证**: Zod
 - **构建工具**: Rsbuild
@@ -132,7 +167,8 @@ src/
 
 ### 数据安全承诺
 
-- ✅ **本地处理**: 所有数据在客户端处理，不上传服务器
+- ✅ **本地处理**: 问卷回答和测评结果在客户端处理，不上传服务器
+- ✅ **支付隔离**: Stripe 解锁流程不上传问卷回答，仅校验付款会话
 - ✅ **匿名化**: 导出数据完全匿名化处理
 - ✅ **用户控制**: 用户拥有完全的数据控制权
 - ✅ **安全清理**: 提供安全的数据删除功能

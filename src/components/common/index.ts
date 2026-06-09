@@ -11,9 +11,12 @@ export { ShareCard, generateShareCardImage } from './share-card';
 export { ShareSuccess } from './share-success';
 export { ShareStats } from './share-stats';
 export { DataCollectionConsent, DataCollectionConsentCompact } from './data-collection-consent';
+export { ReportUnlockPanel } from './report-unlock-panel';
+export { Footer } from './footer';
 
 // 分享相关的类型和工具函数
 export type { ShareResultProps } from './share-result';
 export type { SocialShareFloatingProps } from './social-share-floating';
 export type { ShareSuccessProps } from './share-success';
 export type { ShareStatsProps } from './share-stats';
+export type { ReportUnlockPanelProps } from './report-unlock-panel';

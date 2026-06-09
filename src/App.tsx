@@ -9,6 +9,7 @@ import Results from "./pages/results";
 import Guide from "./pages/guide";
 import Science from "./pages/science";
 import History from "./pages/history";
+import { Privacy, RefundPolicy, Terms } from "./pages/legal";
 import NotFound from "./pages/404";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,9 @@ const App = () => (
           <Route path="/guide" element={<Guide />} />
           <Route path="/science" element={<Science />} />
           <Route path="/history" element={<History />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/refunds" element={<RefundPolicy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -14,5 +14,5 @@
     "noEmit": true
   },
   "extends": ["./tsconfig.base.json"],
-  "include": ["rsbuild.config.ts", "rsbuild.config.server.ts", "src/server"]
+  "include": ["rsbuild.config.ts", "rsbuild.config.server.ts", "src/server", "api"]
 }

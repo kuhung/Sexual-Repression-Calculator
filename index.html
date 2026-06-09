@@ -1,10 +1,109 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>性压抑指数计算器 - Sexual Repression Index Calculator</title>
+    <title>性压抑指数计算器 - Sexual Repression Index Calculator Free Self-Assessment Tool</title>
+    <meta name="description" content="参与免费且完全保密的性压抑测试 (Sexual Repression Test)，基于科学的心理测量量表，帮助您深入洞察情感健康与性心理特征。" />
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Asynchronously load Google Fonts -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="性压抑指数计算器 - 免费的情感健康自我评估工具" />
+    <meta property="og:description" content="参与免费且完全保密的性压抑测试 (Sexual Repression Test)，基于科学的心理测量量表，帮助您深入洞察情感健康与性心理特征。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://sri.kuhung.me/og.png" />
+    
+    <!-- Canonical & Hreflang -->
+    <link rel="alternate" hreflang="zh-CN" href="https://sri.kuhung.me/" />
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "性压抑指数计算器 (Sexual Repression Index Calculator)",
+      "url": "https://sri.kuhung.me/",
+      "description": "参与免费且完全保密的性压抑测试 (Sexual Repression Test)，基于科学的心理测量量表，帮助您深入洞察情感健康与性心理特征。",
+      "applicationCategory": "HealthApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "CNY"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "这个性压抑指数计算器是免费的吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "是的，我们的性压抑指数计算器完全免费。我们致力于为所有人提供科学、可靠的情感健康自我评估工具。"
+        }
+      }, {
+        "@type": "Question",
+        "name": "我的测试结果会被分享或保存吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "绝对不会。所有的测试数据和结果都在您的浏览器本地处理，我们不会收集、存储或分享您的任何个人信息，确保100%的隐私安全。"
+        }
+      }, {
+        "@type": "Question",
+        "name": "测试结果准确吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "我们的计算器基于多个经过验证的心理测量量表（如SIS/SES双控制模型、Mosher性内疚量表等）。虽然它能提供有价值的洞察，但请记住，它不能替代专业的心理咨询或医疗诊断。"
+        }
+      }, {
+        "@type": "Question",
+        "name": "什么是 sexuality test？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sexuality test 是一种帮助个人探索其性心理、性取向、性态度及情感反应的工具。我们的计算器专注于评估性压抑程度，帮助您更好地理解自己在亲密关系中的表现和潜意识情感。"
+        }
+      }]
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "如何进行性压抑测试 (Sexual Repression Test)",
+      "description": "通过三个简单的步骤完成性压抑指数的科学评估，获取深度的情感健康解析。",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "选择测评版本",
+          "text": "根据您的时间安排，选择8-15分钟的快速测评或更全面的完整测评。两者均完全免费且保密。"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "诚实作答",
+          "text": "根据您的第一直觉回答一系列关于性态度、情感反应和亲密关系的问题。您的回答越真实，结果越准确。"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "获取深度解析",
+          "text": "完成测试后，系统将立即生成您的专属报告，包含多维度的分数解读和个性化的心理健康建议。"
+        }
+      ]
+    }
+    </script>
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J0BWJLX31Y"></script>
@@ -15,10 +114,32 @@
 
       gtag('config', 'G-J0BWJLX31Y');
     </script>
+    <meta name="version" content="<%= VERCEL_GIT_COMMIT_SHA %>" />
   </head>
 
   <!-- IMPORTANT: do not modify the code in the <body/> tag. -->
   <body>
+    <h1 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">性压抑测试与指数计算器 (Sexual Repression Test & Calculator) - 免费的情感健康与性心理自我评估工具</h1>
+    
+    <!-- 为无JS环境和SEO爬虫提供的后备内容摘要 -->
+    <noscript>
+      <div style="padding: 20px; font-family: sans-serif; color: #333;">
+        <h2>什么是性压抑测试与指数计算器？</h2>
+        <p>性压抑测试 (Sexual Repression Test) 是一个免费的情感健康与性心理自我评估工具。通过科学的心理测量量表，帮助您深入洞察潜意识中的情感障碍，促进健康的性心理发展。</p>
+        
+        <h3>计算原理与科学量表</h3>
+        <p>本测试基于国际认可的心理学量表：SIS/SES双控制模型（测量性抑制和性兴奋）、Mosher性内疚量表（评估道德负担）、KISS-9性羞耻量表（测量自我接纳）以及SOS性观感调查。这些科学工具共同构成了性压抑指数 (Sexual Repression Index) 的计算原理。</p>
+        
+        <h3>使用指南</h3>
+        <p>1. 选择测评版本：根据您的时间安排，选择8-15分钟的快速测评或25-40分钟的完整测评。<br>
+        2. 诚实作答：根据第一直觉回答关于性态度和情感反应的问题。<br>
+        3. 获取解析：系统将立即生成包含多维度分数的专属保密报告。</p>
+        
+        <h3>结果解读</h3>
+        <p>结果将从性抑制、性兴奋、性内疚和性羞耻四个维度进行深度解析。我们提供个性化的心理健康建议，帮助您更好地理解自己在亲密关系中的表现，并迈向自我接纳。</p>
+      </div>
+    </noscript>
+
     <div id="root"></div>
   </body>
 </html>
