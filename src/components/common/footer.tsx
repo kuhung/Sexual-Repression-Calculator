@@ -8,7 +8,7 @@ export function Footer() {
   return (
     <footer className="border-t border-muted bg-white/50 backdrop-blur-sm mt-auto">
       <div className="container mx-auto px-4 py-8 sm:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-12">
           <div className="sm:col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <Brain className="w-6 h-6 text-psychology-primary" />
@@ -40,6 +40,17 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-foreground">支持</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li><Link to="/guide" className="hover:text-psychology-primary transition-colors">常见问题</Link></li>
+              <li><Link to="/refunds" className="hover:text-psychology-primary transition-colors">退款政策</Link></li>
+              <li><a href="https://kuhung.me/about" target="_blank" rel="noopener noreferrer" className="hover:text-psychology-primary transition-colors">联系支持</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4 text-foreground">法律</h4>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li><Link to="/terms" className="hover:text-psychology-primary transition-colors">服务条款</Link></li>
+              <li><Link to="/privacy" className="hover:text-psychology-primary transition-colors">隐私政策</Link></li>
+              <li><Link to="/refunds" className="hover:text-psychology-primary transition-colors">7天无条件退款</Link></li>
             </ul>
           </div>
         </div>
@@ -62,4 +73,3 @@ export function Footer() {
     </footer>
   );
 }
-

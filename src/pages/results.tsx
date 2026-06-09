@@ -14,7 +14,6 @@ import {
   Brain, 
   Home, 
   Download, 
-  Share2, 
   BarChart3, 
   TrendingUp, 
   Shield, 
@@ -22,30 +21,39 @@ import {
   CheckCircle,
   AlertCircle,
   RefreshCw,
-  ArrowLeft,
-  Clock
+  Clock,
+  Lock,
+  CalendarDays
 } from 'lucide-react';
 import { AssessmentSession, SRIResult, SRI_LEVELS } from '@/types';
 import { getAssessmentSession, downloadAsJSON, diagnoseStorage } from '@/lib/storage';
 import { ALL_SCALES } from '@/lib/scales';
-import { ShareResult, ShareButtonMobile, SocialShareFloating, ShareView, Footer } from '@/components/common';
+import { ShareResult, ShareButtonMobile, SocialShareFloating, Footer, ReportUnlockPanel } from '@/components/common';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { decodeShareData } from '@/lib/share-utils';
+import { isReportUnlocked, markReportUnlocked } from '@/lib/report-unlock';
 
 import { SEO } from '@/components/SEO';
 
+const VERIFY_CHECKOUT_UNAVAILABLE_MESSAGE = '支付校验接口暂时不可用，请稍后刷新页面重试或联系支持。';
+
 export default function Results() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   // 支持多种参数名称以提高兼容性
   const sessionId = searchParams.get('sessionId') || searchParams.get('session') || searchParams.get('id');
   const isShared = searchParams.get('shared') === 'true'; // 检测是否为分享链接
   const shareData = searchParams.get('data'); // 分享数据
+  const checkoutStatus = searchParams.get('checkout');
+  const checkoutSessionId = searchParams.get('checkout_session_id');
   const isMobile = useIsMobile();
   
   const [session, setSession] = useState<AssessmentSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFullReportUnlocked, setIsFullReportUnlocked] = useState(false);
+  const [unlockVerifying, setUnlockVerifying] = useState(false);
+  const [unlockVerificationError, setUnlockVerificationError] = useState<string | null>(null);
 
   // 加载会话数据
   useEffect(() => {
@@ -149,9 +157,101 @@ export default function Results() {
     }
   }, [sessionId, isShared, shareData]);
 
+  useEffect(() => {
+    if (!session?.id || isShared) {
+      setIsFullReportUnlocked(false);
+      return;
+    }
+
+    setIsFullReportUnlocked(isReportUnlocked(session.id));
+  }, [session?.id, isShared]);
+
+  useEffect(() => {
+    if (isShared || !sessionId) return;
+
+    const clearCheckoutParams = () => {
+      const nextParams = new URLSearchParams(window.location.search);
+      nextParams.delete('checkout');
+      nextParams.delete('checkout_session_id');
+      setSearchParams(nextParams, { replace: true });
+    };
+
+    if (checkoutStatus === 'cancelled') {
+      clearCheckoutParams();
+      return;
+    }
+
+    if (checkoutStatus !== 'success' || !checkoutSessionId) return;
+
+    let cancelled = false;
+
+    async function verifyCheckout() {
+      setUnlockVerifying(true);
+      setUnlockVerificationError(null);
+
+      try {
+        const response = await fetch(
+          `/api/verify-checkout-session?session_id=${encodeURIComponent(checkoutSessionId)}`,
+        );
+        const rawResponse = await response.text();
+        let data: {
+          unlocked?: boolean;
+          error?: string;
+          sessionId?: string;
+          checkoutSessionId?: string;
+          amountTotal?: number | null;
+          currency?: string | null;
+        } = {};
+
+        try {
+          data = rawResponse ? JSON.parse(rawResponse) : {};
+        } catch {
+          data = { error: VERIFY_CHECKOUT_UNAVAILABLE_MESSAGE };
+        }
+
+        if (!response.ok || !data.unlocked) {
+          throw new Error(data.error || VERIFY_CHECKOUT_UNAVAILABLE_MESSAGE);
+        }
+
+        if (data.sessionId && data.sessionId !== sessionId) {
+          throw new Error('支付记录与当前评估结果不匹配');
+        }
+
+        if (!cancelled) {
+          markReportUnlocked(sessionId, {
+            checkoutSessionId: data.checkoutSessionId,
+            amountTotal: data.amountTotal,
+            currency: data.currency,
+          });
+          setIsFullReportUnlocked(true);
+          clearCheckoutParams();
+        }
+      } catch (err) {
+        if (!cancelled) {
+          const message = err instanceof Error ? err.message : VERIFY_CHECKOUT_UNAVAILABLE_MESSAGE;
+          setUnlockVerificationError(message);
+        }
+      } finally {
+        if (!cancelled) {
+          setUnlockVerifying(false);
+        }
+      }
+    }
+
+    verifyCheckout();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [checkoutSessionId, checkoutStatus, isShared, sessionId, setSearchParams]);
+
   // 下载结果
   const handleDownload = () => {
     if (!session || !sessionId) return;
+    if (!isShared && !isFullReportUnlocked) {
+      scrollToFullReportUnlock();
+      return;
+    }
     
     const exportData = {
       sessionId: session.id,
@@ -171,6 +271,13 @@ export default function Results() {
   // 重新测评
   const handleRetake = () => {
     navigate(`/assessment?type=${session?.type || 'quick'}`);
+  };
+
+  const scrollToFullReportUnlock = () => {
+    document.getElementById('full-report-unlock')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
   };
 
   // 获取等级信息
@@ -312,23 +419,49 @@ export default function Results() {
                 <ShareResult session={session} />
               )}
               
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDownload}
-                className="text-muted-foreground hidden sm:flex"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                下载报告
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDownload}
-                className="text-muted-foreground sm:hidden"
-              >
-                <Download className="w-4 h-4" />
-              </Button>
+              {!isShared && (
+                isFullReportUnlocked ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDownload}
+                      className="text-muted-foreground hidden sm:flex"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      下载报告
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDownload}
+                      className="text-muted-foreground sm:hidden"
+                    >
+                      <Download className="w-4 h-4" />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={scrollToFullReportUnlock}
+                      className="text-muted-foreground hidden sm:flex"
+                    >
+                      <Lock className="w-4 h-4 mr-2" />
+                      完整报告
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={scrollToFullReportUnlock}
+                      className="text-muted-foreground sm:hidden"
+                    >
+                      <Lock className="w-4 h-4" />
+                    </Button>
+                  </>
+                )
+              )}
               <Button
                 variant="outline"
                 size="sm"
@@ -428,6 +561,17 @@ export default function Results() {
           </CardContent>
         </Card>
 
+        {!isShared && (
+          <ReportUnlockPanel
+            session={session}
+            unlocked={isFullReportUnlocked}
+            verifying={unlockVerifying}
+            verificationError={unlockVerificationError}
+          />
+        )}
+
+        {isFullReportUnlocked && (
+          <>
         {/* 四维度分析 */}
         <Card className="sri-card">
           <CardHeader>
@@ -517,6 +661,31 @@ export default function Results() {
           </CardContent>
         </Card>
 
+        {/* 7天行动计划 */}
+        {!isShared && (
+          <Card className="sri-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CalendarDays className="w-5 h-5 text-psychology-primary" />
+                7天自我观察计划
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {getActionPlan(sri).map((item) => (
+                  <div key={item.day} className="p-4 bg-muted/30 rounded-lg">
+                    <div className="text-sm font-semibold text-psychology-primary mb-1">{item.day}</div>
+                    <h4 className="font-medium mb-2">{item.title}</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+          </>
+        )}
+
         {/* 评估信息 */}
         <Card className="sri-card">
           <CardHeader>
@@ -561,7 +730,8 @@ export default function Results() {
                   建议咨询专业的心理健康专家。
                 </p>
                 <p className="text-yellow-700 leading-relaxed">
-                  您的所有数据都安全地保存在本地设备上，我们不会收集或传输您的个人信息。
+                  您的测评答案和结果保存在本地设备上。付费解锁由 Stripe 处理，
+                  我们不会接触或存储您的银行卡信息。
                 </p>
               </div>
             </div>
@@ -632,4 +802,60 @@ export default function Results() {
       <Footer />
     </div>
   );
+}
+
+function getActionPlan(sri: SRIResult) {
+  const focusAreas = getPrimaryFocusAreas(sri);
+  const focusText = focusAreas.length > 0 ? focusAreas.join('、') : '性态度与亲密关系中的情绪反应';
+
+  return [
+    {
+      day: '第1天',
+      title: '记录触发场景',
+      description: `留意今天哪些场景会引发${focusText}相关的不适、回避或紧张，只记录事实，不急着评价自己。`,
+    },
+    {
+      day: '第2天',
+      title: '区分想法和感受',
+      description: '把自动冒出的判断写下来，再单独写身体感受和情绪感受，帮助自己看见内化观念与真实体验的差别。',
+    },
+    {
+      day: '第3天',
+      title: '标注安全边界',
+      description: '列出让你感到安全、犹豫和明确不舒服的亲密互动边界，边界清楚通常比强迫自己开放更重要。',
+    },
+    {
+      day: '第4天',
+      title: '复盘来源线索',
+      description: '回想这些观念可能来自家庭、教育、宗教文化、过往关系或创伤经历中的哪一类来源，只做线索整理。',
+    },
+    {
+      day: '第5天',
+      title: '练习低风险表达',
+      description: '选择一个可信任的人或写给自己的备忘录，用一句中性表达描述自己的需求、困惑或边界。',
+    },
+    {
+      day: '第6天',
+      title: '更新一个旧规则',
+      description: '找到一个过度严苛的内在规则，尝试改写成更具体、更温和、同时仍保护自己的版本。',
+    },
+    {
+      day: '第7天',
+      title: '决定下一步',
+      description: '回顾一周记录，选择一个最小行动：继续观察、和伴侣沟通、阅读可靠资料，或在强烈困扰时咨询专业人士。',
+    },
+  ];
+}
+
+function getPrimaryFocusAreas(sri: SRIResult) {
+  return [
+    { label: '性观感回避', value: sri.dimensionScores.sosReversed },
+    { label: '性内疚感', value: sri.dimensionScores.sexGuilt },
+    { label: '性羞耻体验', value: sri.dimensionScores.sexualShame },
+    { label: '性抑制倾向', value: sri.dimensionScores.sisOverSes },
+  ]
+    .filter((item) => item.value > 0.75)
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 2)
+    .map((item) => item.label);
 }
