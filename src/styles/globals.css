@@ -169,4 +169,16 @@ body {
 .text-balance {
 text-wrap: balance;
 }
+
+/* 导出报告时的特殊样式 */
+.exporting {
+  /* 重置一些可能影响导出的样式 */
+  background: linear-gradient(to bottom right, #f8fafc, #ffffff, #fff7ed) !important;
+}
+
+.exporting .sri-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(79, 70, 229, 0.1) !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
 }

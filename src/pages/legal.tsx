@@ -180,9 +180,9 @@ export function RefundPolicy() {
 
       <PolicySection title="2. 如何申请">
         <p>
-          请通过
-          <ExternalLink href={CONTACT_URL}>kuhung.me/about</ExternalLink>
-          页面列出的公开联系方式联系我们，并附上付款邮箱、Stripe 收据或付款时间。您无需说明退款原因。
+          请发送包含您的订单时间与订单邮箱的邮件至
+          <ExternalLink href="mailto:refund@kuhung.me">refund@kuhung.me</ExternalLink>
+          申请退款。您无需说明退款原因。
         </p>
       </PolicySection>
 

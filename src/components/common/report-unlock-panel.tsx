@@ -14,7 +14,7 @@ export interface ReportUnlockPanelProps {
   verificationError?: string | null;
 }
 
-const FULL_REPORT_PRICE_LABEL = import.meta.env.PUBLIC_SRI_REPORT_PRICE_LABEL || "HK$9";
+const FULL_REPORT_PRICE_LABEL = import.meta.env.PUBLIC_SRI_REPORT_PRICE_LABEL || "￥9.9";
 const CHECKOUT_UNAVAILABLE_MESSAGE = "支付接口暂时不可用，请稍后重试或联系支持。";
 
 export function ReportUnlockPanel({
@@ -72,7 +72,7 @@ export function ReportUnlockPanel({
               <div>
                 <h3 className="font-semibold text-green-900">完整报告已解锁</h3>
                 <p className="text-sm text-green-800 mt-1">
-                  当前浏览器已可查看详细维度、量表分数、行动计划和报告下载。
+                  当前浏览器已可查看详细维度、量表分数、深度建议和报告下载。
                 </p>
               </div>
             </div>
@@ -96,7 +96,7 @@ export function ReportUnlockPanel({
             </Badge>
             <CardTitle className="text-xl sm:text-2xl text-foreground">解锁更详细的 SRI 分析</CardTitle>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              基础结果保持免费。完整报告包含更细的维度解释、量表分数、7 天自我观察计划和下载版数据。
+              基础结果仅提供压抑程度评估。完整报告包含您的具体得分、深度结果解释、个性化深度建议、四个维度的详细分析与原始量表分数。
             </p>
           </div>
           <div className="text-left sm:text-right">
@@ -107,10 +107,10 @@ export function ReportUnlockPanel({
       </CardHeader>
       <CardContent className="space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Feature icon={<FileText className="w-4 h-4" />} text="四个核心维度详细解读" />
-          <Feature icon={<Shield className="w-4 h-4" />} text="原始量表分数和百分位" />
-          <Feature icon={<Sparkles className="w-4 h-4" />} text="7 天自我观察行动计划" />
-          <Feature icon={<Lock className="w-4 h-4" />} text="当前浏览器本地解锁" />
+          <Feature icon={<FileText className="w-4 h-4" />} text="具体得分与深度结果解释" />
+          <Feature icon={<Shield className="w-4 h-4" />} text="四个核心维度详细解读" />
+          <Feature icon={<Sparkles className="w-4 h-4" />} text="个性化深度建议" />
+          <Feature icon={<Lock className="w-4 h-4" />} text="原始量表分数和百分位" />
         </div>
 
         {(checkoutError || verificationError) && (
@@ -142,11 +142,11 @@ export function ReportUnlockPanel({
           </p>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          付款日起7天内可无条件全额退款。支付前请阅读
+          点击支付即表示您已阅读并同意我们的
           <PolicyLink to="/terms">服务条款</PolicyLink>、
           <PolicyLink to="/privacy">隐私政策</PolicyLink>
           和
-          <PolicyLink to="/refunds">退款政策</PolicyLink>。
+          <PolicyLink to="/refunds">退款政策</PolicyLink>。付款日起7天内可无条件全额退款，请发送订单时间与邮箱至 refund@kuhung.me 申请。
         </p>
       </CardContent>
     </Card>

@@ -26,7 +26,7 @@ import {
   CalendarDays
 } from 'lucide-react';
 import { AssessmentSession, SRIResult, SRI_LEVELS } from '@/types';
-import { getAssessmentSession, downloadAsJSON, diagnoseStorage } from '@/lib/storage';
+import { getAssessmentSession, diagnoseStorage } from '@/lib/storage';
 import { ALL_SCALES } from '@/lib/scales';
 import { ShareResult, ShareButtonMobile, SocialShareFloating, Footer, ReportUnlockPanel } from '@/components/common';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -34,6 +34,7 @@ import { decodeShareData } from '@/lib/share-utils';
 import { isReportUnlocked, markReportUnlocked } from '@/lib/report-unlock';
 
 import { SEO } from '@/components/SEO';
+import html2canvas from 'html2canvas';
 
 const VERIFY_CHECKOUT_UNAVAILABLE_MESSAGE = '支付校验接口暂时不可用，请稍后刷新页面重试或联系支持。';
 
@@ -246,26 +247,78 @@ export default function Results() {
   }, [checkoutSessionId, checkoutStatus, isShared, sessionId, setSearchParams]);
 
   // 下载结果
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!session || !sessionId) return;
     if (!isShared && !isFullReportUnlocked) {
       scrollToFullReportUnlock();
       return;
     }
     
-    const exportData = {
-      sessionId: session.id,
-      timestamp: new Date().toISOString(),
-      type: session.type,
-      demographics: session.demographics,
-      results: session.results,
-      responses: session.responses.reduce((acc, response) => {
-        acc[response.questionId] = response.value;
-        return acc;
-      }, {} as Record<string, number>)
-    };
-    
-    downloadAsJSON(exportData, `SRI评估结果_${new Date().toISOString().split('T')[0]}.json`);
+    try {
+      const content = document.getElementById('report-content');
+      if (!content) return;
+
+      const canvas = await html2canvas(content, {
+        scale: 2, // 提高清晰度
+        useCORS: true,
+        backgroundColor: '#fdfbf7', // 使用温暖的背景色
+        windowWidth: 800,
+        logging: false,
+        onclone: (clonedDoc) => {
+          const clonedContent = clonedDoc.getElementById('report-content');
+          if (clonedContent) {
+            // 添加导出状态类
+            clonedContent.classList.add('exporting');
+            
+            // 隐藏不需要截图的元素
+            const elementsToHide = clonedContent.querySelectorAll('.no-print');
+            elementsToHide.forEach(el => (el as HTMLElement).style.display = 'none');
+
+            // 设置固定宽度和内边距
+            clonedContent.style.width = '800px';
+            clonedContent.style.maxWidth = '800px';
+            clonedContent.style.padding = '60px 40px';
+            clonedContent.style.margin = '0 auto';
+
+            // 创建头部
+            const exportHeader = clonedDoc.createElement('div');
+            exportHeader.style.textAlign = 'center';
+            exportHeader.style.marginBottom = '40px';
+            exportHeader.style.paddingBottom = '24px';
+            exportHeader.style.borderBottom = '1px solid rgba(79, 70, 229, 0.1)';
+            exportHeader.innerHTML = `
+              <div style="background-color: rgba(79, 70, 229, 0.1); border-radius: 50%; width: 64px; height: 64px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; margin-left: auto; margin-right: auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+              </div>
+              <h1 style="font-size: 28px; font-weight: bold; color: #4f46e5; margin-bottom: 8px; margin-top: 0;">SRI 性压抑指数测评报告</h1>
+              <p style="color: #6b7280; font-size: 14px; margin: 0;">生成时间：${new Date().toLocaleDateString('zh-CN')} ${new Date().toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'})}</p>
+            `;
+            clonedContent.insertBefore(exportHeader, clonedContent.firstChild);
+
+            // 创建尾部
+            const exportFooter = clonedDoc.createElement('div');
+            exportFooter.style.textAlign = 'center';
+            exportFooter.style.marginTop = '48px';
+            exportFooter.style.paddingTop = '32px';
+            exportFooter.style.borderTop = '1px solid rgba(79, 70, 229, 0.1)';
+            exportFooter.innerHTML = `
+              <p style="color: #6b7280; font-size: 14px; margin-bottom: 4px; margin-top: 0;">此报告由 SRI 性压抑指数计算器 生成</p>
+              <p style="color: #9ca3af; font-size: 12px; margin: 0;">仅供自我了解和反思使用，不构成医学诊断</p>
+            `;
+            clonedContent.appendChild(exportFooter);
+          }
+        }
+      });
+
+      const image = canvas.toDataURL('image/jpeg', 0.9);
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `SRI评估报告_${new Date().toISOString().split('T')[0]}.jpg`;
+      link.click();
+    } catch (error) {
+      console.error('Failed to generate image:', error);
+      alert('生成报告失败，请稍后重试');
+    }
   };
 
   // 重新测评
@@ -390,7 +443,7 @@ export default function Results() {
         noindex={true}
       />
       {/* 顶部导航 */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-muted">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-muted no-print">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -485,7 +538,7 @@ export default function Results() {
       </nav>
 
       {/* 主要内容区域 */}
-      <main className="container mx-auto px-4 py-8 space-y-8">
+      <main id="report-content" className="container mx-auto px-4 py-8 space-y-8 bg-gradient-to-br from-psychology-calm via-white to-psychology-warm">
         {/* 主要结果卡片 */}
         <Card className="sri-card border-2 border-psychology-primary/20">
           <CardHeader className="text-center pb-6">
@@ -495,79 +548,105 @@ export default function Results() {
             <CardTitle className="text-2xl sm:text-3xl font-bold text-psychology-primary mb-2">
               性压抑指数 (SRI)
             </CardTitle>
-            <div className="text-4xl sm:text-6xl font-bold text-psychology-primary mb-4">
-              {Math.round(sri.totalScore)}
+            <div className="text-5xl sm:text-7xl font-bold text-psychology-primary mt-4 mb-8 flex justify-center items-center leading-none">
+              {isFullReportUnlocked ? (
+                Math.round(sri.totalScore)
+              ) : (
+                <div className="flex items-center text-muted-foreground/40 gap-2">
+                  <Lock className="w-8 h-8 sm:w-12 sm:h-12" />
+                  <span>???</span>
+                </div>
+              )}
             </div>
-            <Badge 
-              className={`text-lg px-6 py-2 ${getLevelColorClass(sri.level)}`}
-              variant="outline"
-            >
-              {levelInfo.label}
-            </Badge>
+            <div className="flex justify-center mb-2">
+              <Badge 
+                className={`text-lg px-6 py-2 ${getLevelColorClass(sri.level)}`}
+                variant="outline"
+              >
+                {levelInfo.label}
+              </Badge>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* 分数解释 */}
             <div className="text-center">
               <p className="text-muted-foreground mb-4">
-                您的SRI指数为 <span className="font-semibold text-psychology-primary">{Math.round(sri.totalScore)}</span>，
-                处于 <span className="font-semibold">{levelInfo.label}</span> 水平
+                {isFullReportUnlocked ? (
+                  <>
+                    您的SRI指数为 <span className="font-semibold text-psychology-primary">{Math.round(sri.totalScore)}</span>，
+                    处于 <span className="font-semibold">{levelInfo.label}</span> 水平
+                  </>
+                ) : (
+                  <>
+                    您的SRI指数处于 <span className="font-semibold text-psychology-primary">{levelInfo.label}</span> 水平，
+                    解锁完整报告查看具体分数与详细分析。
+                  </>
+                )}
               </p>
-              <div className="max-w-2xl mx-auto">
-                <Progress value={sri.totalScore} className="h-3 mb-2" />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>0 (较少压抑)</span>
-                  <span>50 (中等)</span>
-                  <span>100 (较多压抑)</span>
+              {isFullReportUnlocked && (
+                <div className="max-w-2xl mx-auto">
+                  <Progress value={sri.totalScore} className="h-3 mb-2" />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>0 (较少压抑)</span>
+                    <span>50 (中等)</span>
+                    <span>100 (较多压抑)</span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            <Separator />
+            {isFullReportUnlocked && (
+              <>
+                <Separator />
 
-            {/* 结果解释 */}
-            {session.results.interpretation && session.results.interpretation.length > 0 && (
-              <div>
-                <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                  <Info className="w-5 h-5 text-psychology-primary" />
-                  结果解释
-                </h3>
-                <div className="space-y-2">
-                  {session.results.interpretation.map((text, index) => (
-                    <p key={index} className="text-muted-foreground leading-relaxed">
-                      {text}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* 个性化建议 */}
-            {session.results.recommendations && session.results.recommendations.length > 0 && (
-              <div>
-                <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-psychology-primary" />
-                  个性化建议
-                </h3>
-                <div className="space-y-2">
-                  {session.results.recommendations.map((text, index) => (
-                    <div key={index} className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <p className="text-muted-foreground leading-relaxed">{text}</p>
+                {/* 结果解释 */}
+                {session.results.interpretation && session.results.interpretation.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      <Info className="w-5 h-5 text-psychology-primary" />
+                      结果解释
+                    </h3>
+                    <div className="space-y-2">
+                      {session.results.interpretation.map((text, index) => (
+                        <p key={index} className="text-muted-foreground leading-relaxed">
+                          {text}
+                        </p>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                )}
+
+                {/* 个性化建议 */}
+                {session.results.recommendations && session.results.recommendations.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-psychology-primary" />
+                      个性化建议
+                    </h3>
+                    <div className="space-y-2">
+                      {session.results.recommendations.map((text, index) => (
+                        <div key={index} className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <p className="text-muted-foreground leading-relaxed">{text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
         </Card>
 
         {!isShared && (
-          <ReportUnlockPanel
-            session={session}
-            unlocked={isFullReportUnlocked}
-            verifying={unlockVerifying}
-            verificationError={unlockVerificationError}
-          />
+          <div className="no-print">
+            <ReportUnlockPanel
+              session={session}
+              unlocked={isFullReportUnlocked}
+              verifying={unlockVerifying}
+              verificationError={unlockVerificationError}
+            />
+          </div>
         )}
 
         {isFullReportUnlocked && (
@@ -661,33 +740,11 @@ export default function Results() {
           </CardContent>
         </Card>
 
-        {/* 7天行动计划 */}
-        {!isShared && (
-          <Card className="sri-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CalendarDays className="w-5 h-5 text-psychology-primary" />
-                7天自我观察计划
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {getActionPlan(sri).map((item) => (
-                  <div key={item.day} className="p-4 bg-muted/30 rounded-lg">
-                    <div className="text-sm font-semibold text-psychology-primary mb-1">{item.day}</div>
-                    <h4 className="font-medium mb-2">{item.title}</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
           </>
         )}
 
         {/* 评估信息 */}
-        <Card className="sri-card">
+        <Card className="sri-card no-print">
           <CardHeader>
             <CardTitle className="text-lg">评估信息</CardTitle>
           </CardHeader>
@@ -718,7 +775,7 @@ export default function Results() {
         </Card>
 
         {/* 重要声明 */}
-        <Card className="sri-card border-yellow-200 bg-yellow-50/50">
+        <Card className="sri-card border-yellow-200 bg-yellow-50/50 no-print">
           <CardContent className="p-6">
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
@@ -773,7 +830,7 @@ export default function Results() {
         )}
 
         {/* 操作按钮 */}
-        <div className="flex justify-center gap-4 pt-6">
+        <div className="flex justify-center gap-4 pt-6 no-print">
           <Button variant="outline" onClick={() => navigate('/')}>
             <Home className="w-4 h-4 mr-2" />
             返回首页
@@ -797,65 +854,13 @@ export default function Results() {
 
       {/* 移动端浮动分享按钮 */}
       {isMobile && !isShared && (
-        <SocialShareFloating session={session} />
+        <div className="no-print">
+          <SocialShareFloating session={session} />
+        </div>
       )}
-      <Footer />
+      <div className="no-print">
+        <Footer />
+      </div>
     </div>
   );
-}
-
-function getActionPlan(sri: SRIResult) {
-  const focusAreas = getPrimaryFocusAreas(sri);
-  const focusText = focusAreas.length > 0 ? focusAreas.join('、') : '性态度与亲密关系中的情绪反应';
-
-  return [
-    {
-      day: '第1天',
-      title: '记录触发场景',
-      description: `留意今天哪些场景会引发${focusText}相关的不适、回避或紧张，只记录事实，不急着评价自己。`,
-    },
-    {
-      day: '第2天',
-      title: '区分想法和感受',
-      description: '把自动冒出的判断写下来，再单独写身体感受和情绪感受，帮助自己看见内化观念与真实体验的差别。',
-    },
-    {
-      day: '第3天',
-      title: '标注安全边界',
-      description: '列出让你感到安全、犹豫和明确不舒服的亲密互动边界，边界清楚通常比强迫自己开放更重要。',
-    },
-    {
-      day: '第4天',
-      title: '复盘来源线索',
-      description: '回想这些观念可能来自家庭、教育、宗教文化、过往关系或创伤经历中的哪一类来源，只做线索整理。',
-    },
-    {
-      day: '第5天',
-      title: '练习低风险表达',
-      description: '选择一个可信任的人或写给自己的备忘录，用一句中性表达描述自己的需求、困惑或边界。',
-    },
-    {
-      day: '第6天',
-      title: '更新一个旧规则',
-      description: '找到一个过度严苛的内在规则，尝试改写成更具体、更温和、同时仍保护自己的版本。',
-    },
-    {
-      day: '第7天',
-      title: '决定下一步',
-      description: '回顾一周记录，选择一个最小行动：继续观察、和伴侣沟通、阅读可靠资料，或在强烈困扰时咨询专业人士。',
-    },
-  ];
-}
-
-function getPrimaryFocusAreas(sri: SRIResult) {
-  return [
-    { label: '性观感回避', value: sri.dimensionScores.sosReversed },
-    { label: '性内疚感', value: sri.dimensionScores.sexGuilt },
-    { label: '性羞耻体验', value: sri.dimensionScores.sexualShame },
-    { label: '性抑制倾向', value: sri.dimensionScores.sisOverSes },
-  ]
-    .filter((item) => item.value > 0.75)
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 2)
-    .map((item) => item.label);
 }
