@@ -306,6 +306,43 @@ export default function Results() {
               <p style="color: #9ca3af; font-size: 12px; margin: 0;">仅供自我了解和反思使用，不构成医学诊断</p>
             `;
             clonedContent.appendChild(exportFooter);
+
+            // html2canvas 对大字号高度计算不准，导出时强制拉开分数与标签间距
+            const heroHeader = clonedContent.querySelector('.report-hero-header') as HTMLElement | null;
+            if (heroHeader) {
+              heroHeader.style.display = 'flex';
+              heroHeader.style.flexDirection = 'column';
+              heroHeader.style.alignItems = 'center';
+              heroHeader.style.gap = '0';
+              heroHeader.style.width = '100%';
+            }
+
+            const heroScore = clonedContent.querySelector('.report-hero-score') as HTMLElement | null;
+            if (heroScore) {
+              heroScore.style.display = 'block';
+              heroScore.style.lineHeight = '1.2';
+              heroScore.style.minHeight = '96px';
+              heroScore.style.paddingBottom = '32px';
+              heroScore.style.marginBottom = '16px';
+            }
+
+            const heroBadge = clonedContent.querySelector('.report-hero-badge') as HTMLElement | null;
+            if (heroBadge) {
+              heroBadge.style.display = 'flex';
+              heroBadge.style.justifyContent = 'center';
+              heroBadge.style.alignItems = 'center';
+              heroBadge.style.width = '100%';
+              heroBadge.style.paddingTop = '16px';
+              heroBadge.style.marginTop = '8px';
+            }
+
+            const heroBadgePill = clonedContent.querySelector('.report-hero-badge-pill') as HTMLElement | null;
+            if (heroBadgePill) {
+              heroBadgePill.style.display = 'inline-flex';
+              heroBadgePill.style.justifyContent = 'center';
+              heroBadgePill.style.alignItems = 'center';
+              heroBadgePill.style.margin = '0 auto';
+            }
           }
         }
       });
@@ -541,26 +578,29 @@ export default function Results() {
       <main id="report-content" className="container mx-auto px-4 py-8 space-y-8 bg-gradient-to-br from-psychology-calm via-white to-psychology-warm">
         {/* 主要结果卡片 */}
         <Card className="sri-card border-2 border-psychology-primary/20">
-          <CardHeader className="text-center pb-6">
+          <CardHeader className="report-hero-header text-center pb-6 !space-y-0 flex flex-col items-center">
             <div className="w-20 h-20 bg-psychology-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <BarChart3 className="w-10 h-10 text-psychology-primary" />
             </div>
-            <CardTitle className="text-2xl sm:text-3xl font-bold text-psychology-primary mb-2">
+            <CardTitle className="text-2xl sm:text-3xl font-bold text-psychology-primary mb-6">
               性压抑指数 (SRI)
             </CardTitle>
-            <div className="text-5xl sm:text-7xl font-bold text-psychology-primary mt-4 mb-8 flex justify-center items-center leading-none">
+            <div
+              className="report-hero-score text-5xl sm:text-7xl font-bold text-psychology-primary text-center"
+              style={{ lineHeight: 1.2, paddingBottom: '24px', minHeight: '88px' }}
+            >
               {isFullReportUnlocked ? (
                 Math.round(sri.totalScore)
               ) : (
-                <div className="flex items-center text-muted-foreground/40 gap-2">
+                <div className="flex items-center justify-center text-muted-foreground/40 gap-2">
                   <Lock className="w-8 h-8 sm:w-12 sm:h-12" />
                   <span>???</span>
                 </div>
               )}
             </div>
-            <div className="flex justify-center mb-2">
+            <div className="report-hero-badge w-full flex justify-center items-center" style={{ paddingTop: '8px' }}>
               <Badge 
-                className={`text-lg px-6 py-2 ${getLevelColorClass(sri.level)}`}
+                className={`report-hero-badge-pill text-lg px-6 py-2 justify-center ${getLevelColorClass(sri.level)}`}
                 variant="outline"
               >
                 {levelInfo.label}

@@ -181,4 +181,36 @@ text-wrap: balance;
   border: 1px solid rgba(79, 70, 229, 0.1) !important;
   background-color: rgba(255, 255, 255, 0.95) !important;
 }
+
+.exporting .report-hero-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.exporting .report-hero-score {
+  display: block !important;
+  line-height: 1.2 !important;
+  min-height: 96px !important;
+  padding-bottom: 32px !important;
+  margin-bottom: 16px !important;
+}
+
+.exporting .report-hero-badge {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding-top: 16px !important;
+  margin-top: 8px !important;
+}
+
+.exporting .report-hero-badge-pill {
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
 }
