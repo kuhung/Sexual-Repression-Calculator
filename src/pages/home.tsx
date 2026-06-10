@@ -138,7 +138,7 @@ export default function Home() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
                 <div className="text-center p-3 sm:p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-psychology-primary/10">
                   <Clock className="w-8 h-8 text-psychology-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-psychology-primary">8-15</div>
+                  <div className="text-2xl font-bold text-psychology-primary">5-8</div>
                   <div className="text-sm text-muted-foreground">分钟快测</div>
                 </div>
                 
@@ -185,7 +185,7 @@ export default function Home() {
                     <div className="w-8 h-8 rounded-full bg-psychology-primary/10 text-psychology-primary flex items-center justify-center font-bold flex-shrink-0">1</div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">选择测评版本</h3>
-                      <p className="text-sm text-muted-foreground">根据您的时间安排，选择8-15分钟的快速测评或更全面的完整测评。两者均完全免费且保密。</p>
+                      <p className="text-sm text-muted-foreground">根据您的时间安排，选择5-8分钟的快速测评或更全面的完整测评。两者均完全免费且保密。</p>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -256,7 +256,7 @@ export default function Home() {
                   <div className="bg-psychology-primary/5 p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium">预计用时</span>
-                      <span className="text-sm text-psychology-primary font-bold">8-15 分钟</span>
+                      <span className="text-sm text-psychology-primary font-bold">5-8 分钟</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium">题目数量</span>

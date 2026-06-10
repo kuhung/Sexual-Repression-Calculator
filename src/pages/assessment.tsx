@@ -29,7 +29,7 @@ export default function Assessment() {
   const assessmentType = (searchParams.get('type') as 'quick' | 'full') || 'quick';
   
   const seoTitle = assessmentType === 'quick' 
-    ? "快速性压抑测试 (8-15分钟) - 免费情感健康评估" 
+    ? "快速性压抑测试 (5-8分钟) - 免费情感健康评估" 
     : "完整性压抑测试 (25-40分钟) - 深度情感健康评估";
   const seoDesc = assessmentType === 'quick'
     ? "参与免费且保密的快速性压抑测试，初步了解您的情感健康与性心理特征。"
