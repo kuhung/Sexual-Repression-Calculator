@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import stripeRoutes from "./stripe";
+import stripeRoutes from "./stripe.js";
 
 export function setupRoutes(app: Hono) {
   const routes = new Hono();

@@ -1,6 +1,6 @@
 import { handle } from "@hono/node-server/vercel";
 import { Hono } from "hono";
-import { setupRoutes } from "../src/server/routes";
+import { setupRoutes } from "../src/server/routes/index.js";
 
 const app = new Hono();
 
