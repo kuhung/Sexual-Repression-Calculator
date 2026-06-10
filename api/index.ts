@@ -1,4 +1,4 @@
-import { handle } from "@hono/node-server/vercel";
+import { handle } from "hono/vercel";
 import { Hono } from "hono";
 import { setupRoutes } from "../src/server/routes/index.js";
 
