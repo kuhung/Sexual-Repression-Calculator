@@ -224,7 +224,7 @@ export default function Assessment() {
       </nav>
 
       {/* 主要内容区域 */}
-      <main className="container mx-auto px-4 py-8">
+      <main className={`container mx-auto px-4 py-8 ${currentStep === 'questionnaire' ? 'pb-20 sm:pb-8' : ''}`}>
         {/* 知情同意书 */}
         {currentStep === 'consent' && (
           <ConsentForm 

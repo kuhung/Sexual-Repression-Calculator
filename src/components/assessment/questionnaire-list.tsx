@@ -62,6 +62,7 @@ export function QuestionnaireList({
   const [scrollToQuestionId, setScrollToQuestionId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [highlightedQuestionId, setHighlightedQuestionId] = useState<string | null>(null);
 
   // 自动保存功能 - 使用debounced保存避免频繁操作
   useEffect(() => {
@@ -150,12 +151,13 @@ export function QuestionnaireList({
   const handleComplete = () => {
     const stats = getAnswerStats();
     if (stats.requiredUnanswered > 0) {
-      // 滚动到第一个未回答的必答题
       const firstUnanswered = allQuestions.find(q => 
         q.required && !responses.some(r => r.questionId === q.id)
       );
       if (firstUnanswered) {
-        // 如果是分页模式，先跳转到对应页面
+        setHighlightedQuestionId(firstUnanswered.id);
+        setTimeout(() => setHighlightedQuestionId(null), 3000);
+
         if (usesPagination) {
           const questionIndex = allQuestions.findIndex(q => q.id === firstUnanswered.id);
           const targetPage = Math.floor(questionIndex / questionsPerPage);
@@ -176,12 +178,9 @@ export function QuestionnaireList({
           block: 'center'
         });
       }
-      
-      alert(`还有 ${stats.requiredUnanswered} 道必答题未完成，请继续填写。`);
       return;
     }
     
-    // 清除保存的进度
     localStorage.removeItem('sri_assessment_progress');
     onComplete();
   };
@@ -369,7 +368,8 @@ export function QuestionnaireList({
                     key={question.id}
                     id={`question-${question.id}`}
                     className={`
-                      p-6 rounded-lg border-2 transition-all duration-200
+                      p-4 sm:p-6 rounded-lg border-2 transition-all duration-200
+                      ${highlightedQuestionId === question.id ? 'ring-2 ring-red-400 ring-offset-2 animate' : ''}
                       ${isAnswered 
                         ? 'bg-green-50 border-green-200' 
                         : question.required 
@@ -469,51 +469,46 @@ export function QuestionnaireList({
       })}
 
       {/* 底部操作区域 */}
-      <Card className="sri-card">
-        <CardContent className="p-6">
-          <div className="flex justify-between items-center">
+      <Card className="sri-card mb-16 sm:mb-0">
+        <CardContent className="p-4 sm:p-6">
+          {stats.requiredUnanswered > 0 && (
+            <p className="text-sm text-amber-600 text-center mb-3">
+              {usesPagination
+                ? '还有未完成的题目，请继续填写或查看其他页面'
+                : `还有 ${stats.requiredUnanswered} 道必答题未完成`}
+            </p>
+          )}
+
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
             <Button 
               variant="outline"
               onClick={onBack}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 order-2 sm:order-1"
             >
               <ArrowLeft className="w-4 h-4" />
               返回上一步
             </Button>
 
-            <div className="text-center">
-              {usesPagination && stats.requiredUnanswered > 0 && (
-                <p className="text-sm text-amber-600 mb-2">
-                  还有未完成的题目，请继续填写或查看其他页面
-                </p>
-              )}
-              {!usesPagination && (
-                <p className="text-sm text-muted-foreground mb-2">
-                  请确保所有必答题都已完成
-                </p>
-              )}
-              <Button 
-                onClick={handleComplete}
-                disabled={stats.requiredUnanswered > 0}
-                className="bg-psychology-primary hover:bg-psychology-primary/90 px-8"
-                size="lg"
-              >
-                完成评估并查看结果
-                <CheckCircle className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
+            <Button 
+              onClick={handleComplete}
+              className={`order-1 sm:order-2 ${
+                stats.requiredUnanswered > 0
+                  ? 'bg-psychology-primary/70 hover:bg-psychology-primary/80'
+                  : 'bg-psychology-primary hover:bg-psychology-primary/90'
+              }`}
+              size="lg"
+            >
+              完成评估并查看结果
+              <CheckCircle className="w-4 h-4 ml-2" />
+            </Button>
 
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">
-                进度: {Math.round(progress)}%
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {stats.requiredUnanswered > 0 
-                  ? `还有 ${stats.requiredUnanswered} 道必答题`
-                  : '所有必答题已完成'
-                }
-              </p>
-            </div>
+            <p className="text-xs text-muted-foreground text-center sm:text-right order-3">
+              进度 {Math.round(progress)}%
+              {stats.requiredUnanswered > 0 
+                ? ` / 剩余 ${stats.requiredUnanswered} 道必答题`
+                : ' / 所有必答题已完成'
+              }
+            </p>
           </div>
         </CardContent>
       </Card>
