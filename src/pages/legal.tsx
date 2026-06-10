@@ -9,7 +9,7 @@ import { Footer } from '@/components/common';
 import { SEO } from '@/components/SEO';
 
 const LAST_UPDATED = '2026年6月9日';
-const CONTACT_URL = 'https://kuhung.me/about';
+const CONTACT_EMAIL = 'sri@kuhung.me';
 
 export function Terms() {
   return (
@@ -75,8 +75,8 @@ export function Terms() {
       <PolicySection title="7. 联系方式">
         <p>
           有服务、支付或退款问题，请通过
-          <ExternalLink href={CONTACT_URL}>kuhung.me/about</ExternalLink>
-          页面列出的公开联系方式联系。
+          <ExternalLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</ExternalLink>
+          联系我们。
         </p>
       </PolicySection>
     </LegalPage>
@@ -142,8 +142,8 @@ export function Privacy() {
       <PolicySection title="7. 联系方式">
         <p>
           隐私、数据删除或支付数据问题，请通过
-          <ExternalLink href={CONTACT_URL}>kuhung.me/about</ExternalLink>
-          页面列出的公开联系方式联系。
+          <ExternalLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</ExternalLink>
+          联系我们。
         </p>
       </PolicySection>
     </LegalPage>
@@ -181,7 +181,7 @@ export function RefundPolicy() {
       <PolicySection title="2. 如何申请">
         <p>
           请发送包含您的订单时间与订单邮箱的邮件至
-          <ExternalLink href="mailto:refund@kuhung.me">refund@kuhung.me</ExternalLink>
+          <ExternalLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</ExternalLink>
           申请退款。您无需说明退款原因。
         </p>
       </PolicySection>

@@ -5,44 +5,37 @@
 
 import { configureScoreCollection, setDataCollectionConsent } from '@/lib/analytics';
 
-// 1. 基础配置示例
+// 1. 基础配置
 export function initializeDataCollection() {
-  // 配置数据采集系统
   configureScoreCollection({
-    enabled: false, // 默认关闭，需要用户同意后开启
-    endpoint: 'https://your-api-endpoint.com/api/collect-scores', // 替换为实际的API端点
-    batchSize: 5, // 批量提交大小
-    retryAttempts: 3, // 重试次数
-    consentRequired: true // 需要用户同意
+    enabled: false,
+    endpoint: '',
+    batchSize: 5,
+    retryAttempts: 3,
+    consentRequired: true
   });
-
-  console.log('Data collection system initialized');
 }
 
 // 2. 开发环境配置
 export function initializeDevCollection() {
   configureScoreCollection({
-    enabled: true, // 开发环境可以默认开启
-    endpoint: 'http://localhost:3001/api/collect-scores', // 本地开发服务器
-    batchSize: 1, // 开发环境每条数据都立即提交
+    enabled: false,
+    endpoint: 'http://localhost:3001/api/collect-scores',
+    batchSize: 1,
     retryAttempts: 1,
-    consentRequired: false // 开发环境不需要用户同意
+    consentRequired: false
   });
-
-  console.log('Development data collection initialized');
 }
 
 // 3. 生产环境配置
 export function initializeProductionCollection() {
   configureScoreCollection({
-    enabled: false, // 生产环境默认关闭
-    endpoint: process.env.REACT_APP_ANALYTICS_ENDPOINT || '', // 从环境变量读取
-    batchSize: 10, // 生产环境批量提交以减少请求
+    enabled: false,
+    endpoint: '',
+    batchSize: 10,
     retryAttempts: 3,
-    consentRequired: true // 生产环境必须用户同意
+    consentRequired: true
   });
-
-  console.log('Production data collection initialized');
 }
 
 // 4. 用户同意处理示例

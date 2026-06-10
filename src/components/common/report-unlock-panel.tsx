@@ -146,7 +146,7 @@ export function ReportUnlockPanel({
           <PolicyLink to="/terms">服务条款</PolicyLink>、
           <PolicyLink to="/privacy">隐私政策</PolicyLink>
           和
-          <PolicyLink to="/refunds">退款政策</PolicyLink>。付款日起7天内可无条件全额退款，请发送订单时间与邮箱至 refund@kuhung.me 申请。
+          <PolicyLink to="/refunds">退款政策</PolicyLink>。付款日起7天内可无条件全额退款，请发送订单时间与邮箱至 sri@kuhung.me 申请。
         </p>
       </CardContent>
     </Card>

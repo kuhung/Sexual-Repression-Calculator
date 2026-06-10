@@ -41,7 +41,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li><Link to="/guide" className="hover:text-psychology-primary transition-colors">常见问题</Link></li>
               <li><Link to="/refunds" className="hover:text-psychology-primary transition-colors">退款政策</Link></li>
-              <li><a href="https://kuhung.me/about" target="_blank" rel="noopener noreferrer" className="hover:text-psychology-primary transition-colors">联系支持</a></li>
+              <li><a href="mailto:sri@kuhung.me" className="hover:text-psychology-primary transition-colors">联系支持</a></li>
             </ul>
           </div>
 
@@ -62,7 +62,7 @@ export function Footer() {
             <a 
               href="https://kuhung.me/about" 
               target="_blank" 
-              rel="noopener noreferrer" 
+              rel="noopener noreferrer"
               className="font-medium hover:text-psychology-primary transition-colors"
             >
               kuhung

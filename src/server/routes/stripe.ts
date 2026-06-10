@@ -95,7 +95,7 @@ stripeRoutes.post("/create-checkout-session", async (c) => {
       },
       custom_text: {
         submit: {
-          message: `本产品为一次性数字报告解锁。付款日起7天内可无条件全额退款，请发送订单时间与邮箱至 refund@kuhung.me 申请。`,
+          message: `本产品为一次性数字报告解锁。付款日起7天内可无条件全额退款，请发送订单时间与邮箱至 sri@kuhung.me 申请。`,
         },
       },
     });
