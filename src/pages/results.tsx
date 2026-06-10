@@ -882,8 +882,8 @@ export default function Results() {
         </div>
       </main>
 
-      {/* 移动端浮动分享按钮 */}
-      {isMobile && !isShared && (
+      {/* 移动端浮动分享按钮 - 仅在解锁完整报告后显示，避免打断付款心流 */}
+      {isMobile && !isShared && isFullReportUnlocked && (
         <div className="no-print">
           <SocialShareFloating session={session} />
         </div>
