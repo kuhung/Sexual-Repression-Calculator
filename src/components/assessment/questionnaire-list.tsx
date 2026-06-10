@@ -52,14 +52,11 @@ export function QuestionnaireList({
   const scaleIds = getScalesForUser();
   const userGroup = getUserGroupDescription(demographics);
   
-  // 显示选中的量表信息
-  console.log(`用户群体: ${userGroup}, 选中量表:`, scaleIds);
   const allQuestions = scaleIds.flatMap(scaleId => {
     const scale = ALL_SCALES[scaleId];
     return scale ? scale.questions : [];
   });
 
-  const [scrollToQuestionId, setScrollToQuestionId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [highlightedQuestionId, setHighlightedQuestionId] = useState<string | null>(null);

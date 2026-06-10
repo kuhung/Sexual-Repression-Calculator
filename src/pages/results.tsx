@@ -26,7 +26,7 @@ import {
   CalendarDays
 } from 'lucide-react';
 import { AssessmentSession, SRIResult, SRI_LEVELS } from '@/types';
-import { getAssessmentSession, diagnoseStorage } from '@/lib/storage';
+import { getAssessmentSession } from '@/lib/storage';
 import { ALL_SCALES } from '@/lib/scales';
 import { ShareResult, ShareButtonMobile, SocialShareFloating, Footer, ReportUnlockPanel } from '@/components/common';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -117,23 +117,13 @@ export default function Results() {
 
     // 普通会话ID加载
     if (!sessionId) {
-      console.log('URL parameters:', Object.fromEntries(searchParams.entries()));
-      // 运行存储诊断
-      const diagnosis = diagnoseStorage();
-      console.log('Storage diagnosis:', diagnosis);
       setError('未找到评估会话ID。请确保从历史记录页面正确访问。');
       setLoading(false);
       return;
     }
 
-    console.log('Loading session with ID:', sessionId);
-    // 运行存储诊断
-    const diagnosis = diagnoseStorage();
-    console.log('Storage diagnosis:', diagnosis);
-
     try {
       const assessmentSession = getAssessmentSession(sessionId);
-      console.log('Found session:', assessmentSession ? 'Yes' : 'No');
       
       if (!assessmentSession) {
         setError(`未找到会话ID为 "${sessionId}" 的评估记录。可能已被删除或损坏。`);
@@ -147,7 +137,6 @@ export default function Results() {
         return;
       }
 
-      console.log('Session loaded successfully');
       setSession(assessmentSession);
     } catch (err) {
       console.error('Error loading session:', err);

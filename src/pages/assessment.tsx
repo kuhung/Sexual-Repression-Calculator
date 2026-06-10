@@ -65,6 +65,7 @@ export default function Assessment() {
       return;
     }
     setCurrentStep('demographics');
+    window.scrollTo(0, 0);
   };
 
   // 处理人口学信息提交
@@ -79,6 +80,7 @@ export default function Assessment() {
       saveAssessmentSession(updatedSession);
     }
     setCurrentStep('questionnaire');
+    window.scrollTo(0, 0);
   };
 
   // 处理问卷回答更新
@@ -149,9 +151,11 @@ export default function Assessment() {
     switch (currentStep) {
       case 'demographics':
         setCurrentStep('consent');
+        window.scrollTo(0, 0);
         break;
       case 'questionnaire':
         setCurrentStep('demographics');
+        window.scrollTo(0, 0);
         break;
       default:
         navigate('/');
