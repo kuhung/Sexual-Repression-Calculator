@@ -179,6 +179,7 @@ export default function Results() {
 
     if (checkoutStatus === 'cancelled') {
       clearCheckoutParams();
+      scrollToFullReportUnlock();
       return;
     }
 
@@ -192,7 +193,7 @@ export default function Results() {
 
       try {
         const response = await fetch(
-          `/api/verify-checkout-session?session_id=${encodeURIComponent(checkoutSessionId)}`,
+          `/api/verify-checkout-session?session_id=${encodeURIComponent(checkoutSessionId)}&expected_session_id=${encodeURIComponent(sessionId)}`,
         );
         const rawResponse = await response.text();
         let data: {

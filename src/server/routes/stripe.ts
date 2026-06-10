@@ -1,11 +1,10 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import Stripe from "stripe";
 
-const DEFAULT_PRODUCT_NAME = "性压抑指数完整报告";
 const DEFAULT_AMOUNT = 990;
 const DEFAULT_CURRENCY = "cny";
 
-function getStripe(c: any) {
+function getStripe(c: Context) {
   const secretKey = c.env?.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
     throw new Error("Missing STRIPE_SECRET_KEY");
@@ -16,8 +15,7 @@ function getStripe(c: any) {
   });
 }
 
-function getSiteUrl(c: any) {
-  const req = c.req.raw;
+function getSiteUrl(c: Context) {
   const configuredUrl =
     process.env.PUBLIC_SITE_URL ||
     process.env.SITE_URL ||
@@ -79,9 +77,6 @@ stripeRoutes.post("/create-checkout-session", async (c) => {
     }
 
     const siteUrl = getSiteUrl(c);
-    const termsUrl = `${siteUrl}/terms`;
-    const privacyUrl = `${siteUrl}/privacy`;
-    const refundUrl = `${siteUrl}/refunds`;
     const stripe = getStripe(c);
 
     const checkoutSession = await stripe.checkout.sessions.create({
@@ -115,6 +110,7 @@ stripeRoutes.post("/create-checkout-session", async (c) => {
 stripeRoutes.get("/verify-checkout-session", async (c) => {
   try {
     const checkoutSessionId = c.req.query("session_id")?.trim() || "";
+    const expectedSessionId = c.req.query("expected_session_id")?.trim() || "";
 
     if (!checkoutSessionId || !checkoutSessionId.startsWith("cs_")) {
       return c.json({ error: "Invalid Stripe Checkout Session id" }, 400);
@@ -125,6 +121,14 @@ stripeRoutes.get("/verify-checkout-session", async (c) => {
 
     if (checkoutSession.metadata?.product !== "sri_full_report") {
       return c.json({ error: "Checkout Session is not for this product" }, 400);
+    }
+
+    if (expectedSessionId) {
+      const paidForSessionId =
+        checkoutSession.client_reference_id || checkoutSession.metadata?.sessionId || "";
+      if (paidForSessionId && paidForSessionId !== expectedSessionId) {
+        return c.json({ error: "Checkout Session does not match the requested assessment" }, 403);
+      }
     }
 
     if (checkoutSession.payment_status !== "paid") {
