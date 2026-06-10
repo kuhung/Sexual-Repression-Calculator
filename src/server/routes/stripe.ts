@@ -55,7 +55,7 @@ function getLineItem(): Stripe.Checkout.SessionCreateParams.LineItem {
       unit_amount: Number.isFinite(amount) && amount > 0 ? amount : DEFAULT_AMOUNT,
       product_data: {
         name: productName,
-        description: "解锁完整的性压抑指数评估报告，包含详细维度分析与行动建议。",
+        description: "解锁完整的指数评估报告，包含详细维度分析与行动建议。",
       },
     },
   };
