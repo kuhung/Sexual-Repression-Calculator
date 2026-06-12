@@ -32,6 +32,8 @@ import { ShareResult, ShareButtonMobile, SocialShareFloating, Footer, ReportUnlo
 import { useIsMobile } from '@/hooks/use-mobile';
 import { decodeShareData } from '@/lib/share-utils';
 import { isReportUnlocked, markReportUnlocked } from '@/lib/report-unlock';
+import { trackClientPaymentEvent } from '@/lib/payment-analytics';
+import { PAYMENT_EVENTS } from '@/lib/payment-events';
 
 import { SEO } from '@/components/SEO';
 import html2canvas from 'html2canvas';
@@ -167,12 +169,21 @@ export default function Results() {
     };
 
     if (checkoutStatus === 'cancelled') {
+      trackClientPaymentEvent(PAYMENT_EVENTS.checkoutCancelled, {
+        assessment_type: getAssessmentSession(sessionId)?.type || 'unknown',
+        source: 'stripe_return',
+      });
       clearCheckoutParams();
       scrollToFullReportUnlock();
       return;
     }
 
     if (checkoutStatus !== 'success' || !checkoutSessionId) return;
+
+    if (isReportUnlocked(sessionId)) {
+      clearCheckoutParams();
+      return;
+    }
 
     let cancelled = false;
 
@@ -214,12 +225,22 @@ export default function Results() {
             amountTotal: data.amountTotal,
             currency: data.currency,
           });
+          trackClientPaymentEvent(PAYMENT_EVENTS.reportUnlocked, {
+            assessment_type: getAssessmentSession(sessionId)?.type || 'unknown',
+            source: 'stripe_return',
+            amount_minor: data.amountTotal ?? null,
+            currency: data.currency || null,
+          });
           setIsFullReportUnlocked(true);
           clearCheckoutParams();
         }
       } catch (err) {
         if (!cancelled) {
           const message = err instanceof Error ? err.message : VERIFY_CHECKOUT_UNAVAILABLE_MESSAGE;
+          trackClientPaymentEvent(PAYMENT_EVENTS.reportUnlockFailed, {
+            assessment_type: getAssessmentSession(sessionId)?.type || 'unknown',
+            source: 'stripe_return',
+          });
           setUnlockVerificationError(message);
         }
       } finally {

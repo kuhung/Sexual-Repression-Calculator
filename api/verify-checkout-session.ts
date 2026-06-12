@@ -1,4 +1,9 @@
 import Stripe from "stripe";
+import { PAYMENT_EVENTS } from "../src/lib/payment-events.js";
+import {
+  classifyPaymentError,
+  trackServerPaymentEvent,
+} from "../src/server/payment-analytics.js";
 
 export const runtime = "nodejs";
 
@@ -49,12 +54,28 @@ export async function GET(request: Request) {
     }
 
     if (checkoutSession.payment_status !== "paid") {
+      await trackServerPaymentEvent(
+        request,
+        PAYMENT_EVENTS.paymentVerificationPending,
+        {
+          payment_status: checkoutSession.payment_status,
+          livemode: checkoutSession.livemode,
+          amount_minor: checkoutSession.amount_total,
+          currency: checkoutSession.currency,
+        },
+      );
       return Response.json(
         { unlocked: false, paymentStatus: checkoutSession.payment_status },
         { status: 402 },
       );
     }
 
+    await trackServerPaymentEvent(request, PAYMENT_EVENTS.paymentVerified, {
+      payment_status: checkoutSession.payment_status,
+      livemode: checkoutSession.livemode,
+      amount_minor: checkoutSession.amount_total,
+      currency: checkoutSession.currency,
+    });
     console.log("[verify] session verified:", checkoutSession.id);
     return Response.json({
       unlocked: true,
@@ -68,6 +89,14 @@ export async function GET(request: Request) {
       paidAt: new Date().toISOString(),
     });
   } catch (error) {
+    await trackServerPaymentEvent(
+      request,
+      PAYMENT_EVENTS.paymentVerificationFailed,
+      {
+        stage: "retrieve_checkout_session",
+        reason: classifyPaymentError(error),
+      },
+    );
     console.error("[verify] Failed to verify Stripe Checkout Session:", error);
     return Response.json(
       { error: "Unable to verify checkout" },

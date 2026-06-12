@@ -6,6 +6,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { trackClientPaymentEvent } from "@/lib/payment-analytics";
+import { PAYMENT_EVENTS } from "@/lib/payment-events";
 
 export interface ReportUnlockPanelProps {
   session: AssessmentSession;
@@ -29,6 +31,12 @@ export function ReportUnlockPanel({
   const startCheckout = async () => {
     setCheckoutLoading(true);
     setCheckoutError(null);
+    const startedAt = performance.now();
+
+    trackClientPaymentEvent(PAYMENT_EVENTS.checkoutIntent, {
+      assessment_type: session.type,
+      source: "results_unlock_panel",
+    });
 
     try {
       const response = await fetch("/api/create-checkout-session", {
@@ -55,6 +63,11 @@ export function ReportUnlockPanel({
       window.location.href = data.url;
     } catch (error) {
       const message = error instanceof Error ? error.message : CHECKOUT_UNAVAILABLE_MESSAGE;
+      trackClientPaymentEvent(PAYMENT_EVENTS.checkoutClientFailed, {
+        assessment_type: session.type,
+        source: "results_unlock_panel",
+        elapsed_ms: Math.round(performance.now() - startedAt),
+      });
       setCheckoutError(message);
       setCheckoutLoading(false);
     }

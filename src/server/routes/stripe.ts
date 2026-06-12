@@ -1,5 +1,10 @@
 import { Hono, type Context } from "hono";
 import Stripe from "stripe";
+import { PAYMENT_EVENTS } from "../../lib/payment-events";
+import {
+  classifyPaymentError,
+  trackServerPaymentEvent,
+} from "../payment-analytics";
 
 const DEFAULT_AMOUNT = 990;
 const DEFAULT_CURRENCY = "cny";
@@ -108,8 +113,19 @@ stripeRoutes.post("/create-checkout-session", async (c) => {
       },
     });
 
+    await trackServerPaymentEvent(c.req.raw, PAYMENT_EVENTS.checkoutCreated, {
+      checkout_mode: "payment",
+      livemode: checkoutSession.livemode,
+      amount_minor: checkoutSession.amount_total,
+      currency: checkoutSession.currency,
+      payment_methods: "alipay,card",
+    });
     return c.json({ url: checkoutSession.url });
   } catch (error) {
+    await trackServerPaymentEvent(c.req.raw, PAYMENT_EVENTS.checkoutFailed, {
+      stage: "create_checkout_session",
+      reason: classifyPaymentError(error),
+    });
     console.error("Failed to create Stripe Checkout Session:", error);
     return c.json({ error: "Unable to start checkout" }, 500);
   }
@@ -140,12 +156,28 @@ stripeRoutes.get("/verify-checkout-session", async (c) => {
     }
 
     if (checkoutSession.payment_status !== "paid") {
+      await trackServerPaymentEvent(
+        c.req.raw,
+        PAYMENT_EVENTS.paymentVerificationPending,
+        {
+          payment_status: checkoutSession.payment_status,
+          livemode: checkoutSession.livemode,
+          amount_minor: checkoutSession.amount_total,
+          currency: checkoutSession.currency,
+        },
+      );
       return c.json({
         unlocked: false,
         paymentStatus: checkoutSession.payment_status,
       }, 402);
     }
 
+    await trackServerPaymentEvent(c.req.raw, PAYMENT_EVENTS.paymentVerified, {
+      payment_status: checkoutSession.payment_status,
+      livemode: checkoutSession.livemode,
+      amount_minor: checkoutSession.amount_total,
+      currency: checkoutSession.currency,
+    });
     return c.json({
       unlocked: true,
       checkoutSessionId: checkoutSession.id,
@@ -155,6 +187,14 @@ stripeRoutes.get("/verify-checkout-session", async (c) => {
       paidAt: new Date().toISOString(),
     });
   } catch (error) {
+    await trackServerPaymentEvent(
+      c.req.raw,
+      PAYMENT_EVENTS.paymentVerificationFailed,
+      {
+        stage: "retrieve_checkout_session",
+        reason: classifyPaymentError(error),
+      },
+    );
     console.error("Failed to verify Stripe Checkout Session:", error);
     return c.json({ error: "Unable to verify checkout" }, 500);
   }

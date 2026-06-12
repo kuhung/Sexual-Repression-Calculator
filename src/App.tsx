@@ -3,7 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react";
 import Index from "./pages/home";
 import Assessment from "./pages/assessment";
 import Results from "./pages/results";
@@ -14,6 +14,17 @@ import { Privacy, RefundPolicy, Terms } from "./pages/legal";
 import NotFound from "./pages/404";
 
 const queryClient = new QueryClient();
+
+function stripAnalyticsUrlIdentifiers(event: BeforeSendEvent) {
+  try {
+    const url = new URL(event.url, window.location.origin);
+    url.search = "";
+    url.hash = "";
+    return { ...event, url: url.toString() };
+  } catch {
+    return event;
+  }
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -42,7 +53,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-      <Analytics />
+      <Analytics beforeSend={stripAnalyticsUrlIdentifiers} />
     </TooltipProvider>
   </QueryClientProvider>
 );

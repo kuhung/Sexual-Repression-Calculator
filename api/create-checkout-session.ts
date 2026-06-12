@@ -1,4 +1,9 @@
 import Stripe from "stripe";
+import { PAYMENT_EVENTS } from "../src/lib/payment-events.js";
+import {
+  classifyPaymentError,
+  trackServerPaymentEvent,
+} from "../src/server/payment-analytics.js";
 
 export const runtime = "nodejs";
 
@@ -107,9 +112,20 @@ export async function POST(request: Request) {
       },
     });
 
+    await trackServerPaymentEvent(request, PAYMENT_EVENTS.checkoutCreated, {
+      checkout_mode: "payment",
+      livemode: checkoutSession.livemode,
+      amount_minor: checkoutSession.amount_total,
+      currency: checkoutSession.currency,
+      payment_methods: "alipay,card",
+    });
     console.log("[checkout] session created:", checkoutSession.id, "for:", sessionId);
     return Response.json({ url: checkoutSession.url });
   } catch (error) {
+    await trackServerPaymentEvent(request, PAYMENT_EVENTS.checkoutFailed, {
+      stage: "create_checkout_session",
+      reason: classifyPaymentError(error),
+    });
     console.error("[checkout] Failed to create Stripe Checkout Session:", error);
     return Response.json({ error: "Unable to start checkout" }, { status: 500 });
   }

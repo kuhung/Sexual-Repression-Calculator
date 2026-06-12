@@ -90,6 +90,23 @@ Stripe Dashboard 建议：
   - Support/contact URL: `https://kuhung.me/about` 或你的专用支持邮箱/页面
 - 当前 Checkout Session 会要求用户勾选服务条款；如果 Stripe Dashboard 没有有效的 Terms of service URL，创建 Checkout Session 可能失败。
 
+#### 支付漏斗埋点
+
+支付链路使用 Vercel Web Analytics Custom Events，按以下顺序分析转化：
+
+| 事件 | 触发位置 | 含义 |
+| --- | --- | --- |
+| `Checkout Intent` | 浏览器 | 用户点击支付解锁 |
+| `Checkout Created` | 服务端 | Stripe Checkout Session 创建成功 |
+| `Checkout Failed` / `Checkout Client Failed` | 服务端 / 浏览器 | 创建 Session 或请求链路失败 |
+| `Checkout Cancelled` | 浏览器 | 用户从 Stripe 取消并返回 |
+| `Payment Verified` | 服务端 | Stripe 确认订单已支付 |
+| `Payment Verification Pending` / `Payment Verification Failed` | 服务端 | 支付尚未完成或校验失败 |
+| `Report Unlocked` / `Report Unlock Failed` | 浏览器 | 当前浏览器完成或未能完成报告解锁 |
+
+事件属性仅包含商品、支付模式、评估类型、金额、币种、环境和标准化错误分类。
+禁止发送评估会话 ID、Stripe Checkout Session ID、邮箱、人口学信息、问卷回答或原始错误文本。
+
 ## 📋 功能说明
 
 ### 评估版本
