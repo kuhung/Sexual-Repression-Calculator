@@ -25,13 +25,21 @@ function getSiteUrl(c: Context) {
     return configuredUrl.replace(/\/$/, "");
   }
 
-  const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  try {
+    return new URL(c.req.url).origin.replace(/\/$/, "");
+  } catch {
+    // Fall back to Vercel-provided hostnames when the request URL is unavailable.
+  }
+
+  const vercelUrl =
+    process.env.VERCEL_BRANCH_URL ||
+    process.env.VERCEL_URL ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL;
   if (vercelUrl) {
     return `https://${vercelUrl}`.replace(/\/$/, "");
   }
 
-  const url = new URL(c.req.url);
-  return `${url.protocol}//${url.host}`.replace(/\/$/, "");
+  return "";
 }
 
 function getLineItem(): Stripe.Checkout.SessionCreateParams.LineItem {

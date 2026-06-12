@@ -65,6 +65,11 @@ PUBLIC_SRI_REPORT_PRICE_LABEL=￥9.9
 PUBLIC_SITE_URL=https://your-domain.example
 ```
 
+`STRIPE_SECRET_KEY` 必须配置到实际运行支付接口的环境。生产域名使用
+Production；`dev` 分支和 `dev.sri.kuhung.me` 使用 Preview，并建议将变量限定到
+`dev` 分支。`PUBLIC_SITE_URL` 也应按环境分别配置；未配置时，接口会使用当前请求域名
+生成 Stripe 的成功和取消回跳地址。
+
 如果不使用 `STRIPE_FULL_REPORT_PRICE_ID`，接口会使用以下变量动态创建 Checkout line item：
 
 ```bash
